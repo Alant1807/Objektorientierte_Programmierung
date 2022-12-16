@@ -1,0 +1,12 @@
+[
+  {
+    "CLASSNAME": "OutgoingTransfer",
+    "INSTANCE": {
+      "sender": "yusuf",
+      "recipient": "Alan",
+      "date": "16/12/2022",
+      "amount": 200.0,
+      "description": "überweisen"
+    }
+  }
+]

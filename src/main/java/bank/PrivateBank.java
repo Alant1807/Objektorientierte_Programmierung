@@ -415,7 +415,7 @@ public class PrivateBank implements Bank {
         }
     }
 
-    List<String> getAllAccounts(){
+    public List<String> getAllAccounts(){
         List<String> accounts = new ArrayList<String>(this.accountsToTransactions.keySet());
         return accounts;
     }

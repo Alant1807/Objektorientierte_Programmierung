@@ -12,6 +12,8 @@ public class Transfer extends Transaction {
      */
     private String recipient;
 
+    public Transfer(){}
+
     /**
      * Konstruktor für alle Basisattribute {@link Transaction#Transaction(String, double, String)}.
      *

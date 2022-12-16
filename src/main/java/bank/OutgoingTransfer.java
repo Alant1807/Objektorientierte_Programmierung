@@ -3,6 +3,7 @@ package bank;
 import bank.exceptions.TransactionAttributeException;
 
 public class OutgoingTransfer extends Transfer {
+    public OutgoingTransfer(){}
     /**
      * Konstruktor für die Basisattribute {@link Transaction#Transaction(String, double, String)}
      *

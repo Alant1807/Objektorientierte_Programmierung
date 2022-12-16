@@ -26,7 +26,7 @@
                 <groupId>org.openjfx</groupId>
                 <version>${javafx.maven.plugin.version}</version>
                 <configuration>
-                    <mainClass>ui.FxApplication</mainClass>
+                    <mainClass>ui.Main_Application</mainClass>
                 </configuration>
             </plugin>
             <plugin>

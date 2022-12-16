@@ -1,10 +1,12 @@
 bank\Bank.class
 bank\OutgoingTransfer.class
+ui\Main_Application.class
 bank\exceptions\TransactionAlreadyExistException.class
 bank\CalculateBill.class
 bank\Transaction.class
+ui\AccountViewController.class
+ui\MainViewController.class
 bank\exceptions\TransactionDoesNotExistException.class
-Main.class
 bank\Transfer.class
 bank\Payment.class
 bank\exceptions\AccountDoesNotExistException.class

@@ -16,6 +16,8 @@ public abstract class Transaction implements CalculateBill {
      */
     private String description;
 
+    public Transaction(){}
+
     /**
      * Konstruktor für alle Basisattribute.
      *

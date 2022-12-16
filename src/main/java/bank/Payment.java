@@ -12,6 +12,8 @@ public class Payment extends Transaction {
      */
     private double outgoingInterest;
 
+    public Payment(){}
+
     /**
      * Konstruktor für alle Basisattribute {@link Transaction#Transaction(String, double, String)}.
      *
