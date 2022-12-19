@@ -128,7 +128,7 @@ public class PrivateBankAlt implements Bank {
             return (this.getName().equals(privateBankAlt.getName())) &&
                     Double.compare(this.getIncomingInterest(), privateBankAlt.getIncomingInterest()) == 0 &&
                     Double.compare(this.getOutgoingInterest()
-                    , privateBankAlt.getOutgoingInterest()) == 0;
+                            , privateBankAlt.getOutgoingInterest()) == 0;
         }
         return false;
     }

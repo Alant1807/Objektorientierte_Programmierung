@@ -11,15 +11,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class Main_Application extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
     private PrivateBank privateBank;
-    private Payment payment;
-    private IncomingTransfer incomingTransfer;
-    private OutgoingTransfer outgoingTransfer;
     private Stage primaryStage;
     private ObservableList<String> accountList = FXCollections.observableArrayList();
     private ObservableList<Transaction> selectedAccountTransactions;
@@ -29,29 +28,39 @@ public class Main_Application extends Application {
         this.privateBank = new PrivateBank("Bank", 0.01, 0.05,
                 "Bankdirectory");
         accountList.addAll(privateBank.getAllAccounts());
-        this.payment = new Payment();
-        this.incomingTransfer = new IncomingTransfer();
-        this.outgoingTransfer = new OutgoingTransfer();
+    }
+
+    public Payment initPayment(String date, double amount, String desc) throws TransactionAttributeException {
+        return new Payment(date, amount, desc);
+    }
+
+    public IncomingTransfer initIncoming(String date, double amount, String desc, String sender, String recipient)
+            throws TransactionAttributeException {
+        IncomingTransfer incomingTransfer = new IncomingTransfer(date, amount, desc);
+        return new IncomingTransfer(incomingTransfer, sender, recipient);
+    }
+
+    public OutgoingTransfer initOutgoing(String date, double amount, String desc, String sender, String recipient)
+            throws TransactionAttributeException {
+        OutgoingTransfer outgoingTransfer = new OutgoingTransfer(date, amount, desc);
+        return new OutgoingTransfer(outgoingTransfer, sender, recipient);
     }
 
     public PrivateBank getBank() {
         return this.privateBank;
     }
 
-    public Payment getPayment() {
-        return this.payment;
-    }
-
-    public IncomingTransfer getIncomingTransfer() {
-        return this.incomingTransfer;
-    }
-
-    public OutgoingTransfer getOutgoingTransfer() {
-        return this.outgoingTransfer;
-    }
-
     public ObservableList<String> getaccountsList() {
         return this.accountList;
+    }
+
+    public String getDerAccount(String derAccount) {
+        for (String searchacc : accountList) {
+            if (Objects.equals(searchacc, derAccount)) {
+                return searchacc;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -74,12 +83,12 @@ public class Main_Application extends Application {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("AccountView.fxml"));
             AnchorPane pane = (AnchorPane) fxmlLoader.load();
-            AccountViewController controller = fxmlLoader.getController();
+            AccountViewController controller = (AccountViewController) fxmlLoader.getController();
             derAccount = acc;
             controller.setMainApp(this);
-            controller.setAccountNameLabel(acc);
+            controller.setAccountNameLabel(derAccount);
             double balance = 0.0;
-            balance = this.privateBank.getAccountBalance(acc);
+            balance = this.privateBank.getAccountBalance(derAccount);
             controller.setAccountBalanceLabel(balance);
             Scene scene = new Scene(pane);
             primaryStage.setScene(scene);

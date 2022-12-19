@@ -1,16 +1,16 @@
 [
   {
-    "CLASSNAME": "OutgoingTransfer",
+    "CLASSNAME": "IncomingTransfer",
     "INSTANCE": {
       "sender": "Alan",
-      "recipient": "Yusuf",
+      "recipient": "kek",
       "date": "19/12/2022",
-      "amount": 55.0,
-      "description": "rgr"
+      "amount": 333.0,
+      "description": "^eir"
     }
   },
   {
-    "CLASSNAME": "OutgoingTransfer",
+    "CLASSNAME": "IncomingTransfer",
     "INSTANCE": {
       "sender": "Alan",
       "recipient": "kek",

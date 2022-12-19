@@ -19,6 +19,8 @@ public class PrivateBankTest {
     private IncomingTransfer incomingTransfer1;
     private OutgoingTransfer outgoingTransfer;
     private OutgoingTransfer outgoingTransfer1;
+    private OutgoingTransfer outgoingTransfer3;
+    private OutgoingTransfer outgoingTransfer4;
     List<Transaction> list;
     String acc;
 
@@ -29,11 +31,9 @@ public class PrivateBankTest {
         acc = "testacc";
         outgoingTransfer = new OutgoingTransfer("22.11.2022", 500, "Outgoing Transfer");
         outgoingTransfer1 = new OutgoingTransfer(outgoingTransfer, "Alan", "Rekan");
-        incomingTransfer = new IncomingTransfer("23.11.2022", 1500, "Incoming Transfer");
-        incomingTransfer1 = new IncomingTransfer(incomingTransfer, "Yusuf", "Alan");
-        payment = new Payment("10.12.2022", 5000, "test");
-        payment1 = new Payment(payment, 0.02, 1);
-        list = new ArrayList<Transaction>(Arrays.asList(outgoingTransfer1, incomingTransfer1, payment1));
+        outgoingTransfer3 = new OutgoingTransfer("22.11.2022",600,"ifif");
+        outgoingTransfer4 = new OutgoingTransfer(outgoingTransfer3,"Alan","Rekan");
+        list = new ArrayList<Transaction>(Arrays.asList(outgoingTransfer1, outgoingTransfer4));
     }
 
     @Test
@@ -71,15 +71,15 @@ public class PrivateBankTest {
     public void TestAddTransactions() throws TransactionAlreadyExistException,
             AccountDoesNotExistException, TransactionAttributeException, AccountAlreadyExistsException {
         privateBank.createAccount(acc);
-        privateBank.addTransaction(acc, incomingTransfer1);
-        privateBank.addTransaction(acc, payment1);
-        assertTrue(privateBank.containsTransaction(acc, incomingTransfer1));
+        privateBank.addTransaction(acc, outgoingTransfer1);
+        privateBank.addTransaction(acc, outgoingTransfer4);
+        assertTrue(privateBank.containsTransaction(acc, outgoingTransfer4));
         Exception exception = assertThrows(TransactionAlreadyExistException.class, () -> {
-            privateBank.addTransaction(acc, incomingTransfer1);
+            privateBank.addTransaction(acc, outgoingTransfer4);
         });
         assertEquals("Exception thrown: Transaktion existiert schon.", exception.getMessage());
         Exception exception1 = assertThrows(AccountDoesNotExistException.class, () -> {
-            privateBank.addTransaction("tmpacc", incomingTransfer1);
+            privateBank.addTransaction("tmpacc", outgoingTransfer4);
         });
         assertEquals("Exception thrown: Account existiert nicht.", exception1.getMessage());
         Exception exception2 = assertThrows(TransactionAttributeException.class, () -> {
@@ -94,18 +94,18 @@ public class PrivateBankTest {
     public void TestRemoveTransaction() throws AccountDoesNotExistException, TransactionDoesNotExistException,
             AccountAlreadyExistsException, TransactionAlreadyExistException, TransactionAttributeException {
         privateBank.createAccount(acc);
-        privateBank.addTransaction(acc, incomingTransfer1);
-        privateBank.addTransaction(acc, payment1);
-        privateBank.removeTransaction(acc, incomingTransfer1);
-        privateBank.removeTransaction(acc, payment1);
-        assertFalse(privateBank.containsTransaction(acc, incomingTransfer1));
-        assertFalse(privateBank.containsTransaction(acc, payment1));
+        privateBank.addTransaction(acc, outgoingTransfer1);
+        privateBank.addTransaction(acc, outgoingTransfer4);
+        privateBank.removeTransaction(acc, outgoingTransfer1);
+        privateBank.removeTransaction(acc, outgoingTransfer4);
+        assertFalse(privateBank.containsTransaction(acc, outgoingTransfer1));
+        assertFalse(privateBank.containsTransaction(acc, outgoingTransfer4));
         Exception exception = assertThrows(AccountDoesNotExistException.class, () -> {
             privateBank.removeTransaction("newacc", outgoingTransfer1);
         });
         assertEquals("Exception thrown: Account existiert nicht.", exception.getMessage());
         Exception exception1 = assertThrows(TransactionDoesNotExistException.class, () -> {
-            privateBank.removeTransaction(acc, incomingTransfer1);
+            privateBank.removeTransaction(acc, outgoingTransfer4);
         });
         assertEquals("Exception thrown: Transaktion existiert nicht.", exception1.getMessage());
     }
@@ -113,16 +113,8 @@ public class PrivateBankTest {
     @Test
     public void TestContainsTransaction() throws TransactionAlreadyExistException, AccountAlreadyExistsException {
         privateBank.createAccount(acc, list);
-        assertTrue(privateBank.containsTransaction(acc, incomingTransfer1));
         assertTrue(privateBank.containsTransaction(acc, outgoingTransfer1));
-        assertTrue(privateBank.containsTransaction(acc, payment1));
-    }
-
-    @Test
-    public void TestGetAccountBalance() throws TransactionAlreadyExistException, AccountAlreadyExistsException {
-        privateBank.createAccount(acc, list);
-        assertEquals(1000, privateBank.getAccountBalance(acc));
-        assertNotEquals(200, privateBank.getAccountBalance(acc), 0.0);
+        assertTrue(privateBank.containsTransaction(acc, outgoingTransfer4));
     }
 
     @Test

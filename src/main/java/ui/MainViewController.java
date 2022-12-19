@@ -48,7 +48,7 @@ public class MainViewController implements EventHandler<ActionEvent> {
      */
     @Override
     public void handle(ActionEvent actionEvent) {
-        if (actionEvent.getSource() == menuItemAuswaehlen){
+        if (actionEvent.getSource() == menuItemAuswaehlen) {
             String selectedAccount = this.listaccounts.getSelectionModel().getSelectedItem();
             this.main_application.showAccountView(selectedAccount);
         } else if (actionEvent.getSource() == menuItemLoeschen) {
@@ -57,13 +57,13 @@ public class MainViewController implements EventHandler<ActionEvent> {
             alert.setHeaderText("Achtung, Account löschen !!!");
             alert.setContentText("Sind Sie sich sicher ?");
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
+            if (result.get() == ButtonType.OK) {
                 try {
                     Delete();
                 } catch (AccountDoesNotExistException e) {
                     System.out.println(e.getMessage());
                 }
-            }else {
+            } else {
                 alert.close();
             }
         } else if (actionEvent.getSource() == createAccountButton) {
