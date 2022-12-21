@@ -13,7 +13,6 @@ public class MainViewController implements EventHandler<ActionEvent> {
     Main_Application main_application;
     @FXML
     private javafx.scene.control.ListView<String> listaccounts;
-
     @FXML
     protected ContextMenu contextMenu = new ContextMenu();
     @FXML
@@ -23,11 +22,22 @@ public class MainViewController implements EventHandler<ActionEvent> {
     @FXML
     protected Button createAccountButton = new Button();
 
+    /**
+     * Methode , die den account erstellt.
+     *
+     * @param acc account der erstellt werden soll
+     * @throws AccountAlreadyExistsException
+     */
     private void Creation(String acc) throws AccountAlreadyExistsException {
-        this.listaccounts.getItems().add(acc);
         main_application.getBank().createAccount(acc);
+        this.listaccounts.getItems().add(acc);
     }
 
+    /**
+     * Löscht den Account
+     *
+     * @throws AccountDoesNotExistException
+     */
     private void Delete() throws AccountDoesNotExistException {
         int selectedIndex = this.listaccounts.getSelectionModel().getSelectedIndex();
         String deletedAcc = this.listaccounts.getSelectionModel().getSelectedItem();
@@ -35,6 +45,11 @@ public class MainViewController implements EventHandler<ActionEvent> {
         main_application.getBank().deleteAccount(deletedAcc);
     }
 
+    /**
+     * setzt die MainView beim Aufruf mit allen Elementen.
+     *
+     * @param main_application setzt das Objekt auf die main_application
+     */
     @FXML
     public void setMain_application(Main_Application main_application) {
         this.main_application = main_application;
@@ -44,6 +59,8 @@ public class MainViewController implements EventHandler<ActionEvent> {
     }
 
     /**
+     * Methode die alle Events abfängt und behandelt.
+     *
      * @param actionEvent trigger event as a Parameter
      */
     @Override
@@ -61,7 +78,7 @@ public class MainViewController implements EventHandler<ActionEvent> {
                 try {
                     Delete();
                 } catch (AccountDoesNotExistException e) {
-                    System.out.println(e.getMessage());
+                    System.err.println(e.getMessage());
                 }
             } else {
                 alert.close();
@@ -75,9 +92,21 @@ public class MainViewController implements EventHandler<ActionEvent> {
                 try {
                     Creation(acc);
                 } catch (AccountAlreadyExistsException e) {
-                    System.out.println(e.getMessage());
+                    alertAccountDoesExist();
+                    System.err.println(e.getMessage());
                 }
             });
         }
+    }
+
+    /**
+     * Fehlermeldung Dialog, wenn account nicht existiert.
+     */
+    public void alertAccountDoesExist() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Fehler");
+        alert.setHeaderText("Es ist ein Fehler aufgetreten");
+        alert.setContentText("Account existiert nicht");
+        alert.showAndWait();
     }
 }

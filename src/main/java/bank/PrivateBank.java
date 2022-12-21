@@ -300,6 +300,8 @@ public class PrivateBank implements Bank {
         for (Transaction t : transactions) {
             if (t instanceof Transfer transfer) {
                 balance += transfer.calculate();
+            } else if (t instanceof Payment payment) {
+                balance += payment.calculate();
             }
         }
         return balance;
@@ -325,7 +327,7 @@ public class PrivateBank implements Bank {
         if (asc) {
             transactions.sort(Comparator.comparingDouble(Transaction::getAmount));
         } else {
-            Collections.reverse(transactions);
+            transactions.sort(Comparator.comparingDouble(Transaction::getAmount).reversed());
         }
         return transactions;
     }
@@ -416,8 +418,7 @@ public class PrivateBank implements Bank {
     }
 
     public List<String> getAllAccounts() {
-        List<String> accounts = new ArrayList<String>(this.accountsToTransactions.keySet());
-        return accounts;
+        return new ArrayList<>(this.accountsToTransactions.keySet());
     }
 }
 

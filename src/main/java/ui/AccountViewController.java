@@ -5,7 +5,6 @@ import bank.exceptions.AccountDoesNotExistException;
 import bank.exceptions.TransactionAlreadyExistException;
 import bank.exceptions.TransactionAttributeException;
 import bank.exceptions.TransactionDoesNotExistException;
-import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,7 +14,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
-import java.awt.font.TextHitInfo;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,103 +22,101 @@ import java.util.Optional;
 
 public class AccountViewController implements EventHandler<ActionEvent> {
     Main_Application main_application;
-    MainViewController mainViewController;
     public String selectedAccount;
-    public String recipientAccount;
+    //public String recipientAccount;
     private ObservableList<Transaction> selectedAccountTransactions;
-
-    public String getSelectedAccounts() {
-        return this.selectedAccount;
-    }
-
     @FXML
     private ListView<Transaction> transactionListView = new ListView<>();
-
     @FXML
     protected Button sortAsc = new Button();
-
     @FXML
     protected Button sortDesc = new Button();
-
     @FXML
     protected Button sortPos = new Button();
-
     @FXML
     protected Button sortNeg = new Button();
-
     @FXML
     protected Button goBack = new Button();
-
     @FXML
     protected ContextMenu contextMenu = new ContextMenu();
-
     @FXML
     protected MenuItem menuItemLoeschen = new MenuItem("Löschen");
-
     @FXML
     protected Label AccountNameLabel = new Label();
-
     @FXML
     private Label AccountBalanceLabel = new Label();
-
     @FXML
     private Button newTransactionButton = new Button();
-
-    @FXML
     public void setAccountNameLabel(String acc) {
         AccountNameLabel.setText("Account: " + acc);
     }
 
+    /**
+     * Setzt das Label der AccountBalance.
+     *
+     * @param amount übergebene Geldmenge
+     */
     public void setAccountBalanceLabel(double amount) {
         String balance = String.valueOf(amount);
         AccountBalanceLabel.setText("Kontostand: " + balance + "€");
     }
 
-    public void setSelectedAccountTransactions(List<Transaction> l) {
-        selectedAccountTransactions = FXCollections.observableArrayList(l);
-    }
-
+    /**
+     * Methode zum aufsteigenedem Sortieren der Listview.
+     */
     private void handleSortAsc() {
+        transactionListView.getItems().clear();
         selectedAccountTransactions = FXCollections.observableArrayList(
                 main_application.getBank().getTransactionsSorted(selectedAccount, true)
         );
-        transactionListView.getItems().clear();
         transactionListView.setItems(selectedAccountTransactions);
     }
 
+    /**
+     * Methode zum absteigendem Sortieren der Listview.
+     */
     private void handleSortDesc() {
+        transactionListView.getItems().clear();
         selectedAccountTransactions = FXCollections.observableArrayList(
                 main_application.getBank().getTransactionsSorted(selectedAccount, false)
         );
-        transactionListView.getItems().clear();
         transactionListView.setItems(selectedAccountTransactions);
     }
 
+    /**
+     * Methode zum Sortieren der Listview nach positiven Transaktionen.
+     */
     private void handleSortPos() {
+        transactionListView.getItems().clear();
         selectedAccountTransactions = FXCollections.observableArrayList(
                 main_application.getBank().getTransactionsByType(selectedAccount, true)
         );
-        transactionListView.getItems().clear();
         transactionListView.setItems(selectedAccountTransactions);
     }
 
+    /**
+     * Methode zum Sortieren der Listview nach negativen Transaktionen.
+     */
     private void handleSortNeg() {
+        transactionListView.getItems().clear();
         selectedAccountTransactions = FXCollections.observableArrayList(
                 main_application.getBank().getTransactionsByType(selectedAccount, false)
         );
-        transactionListView.getItems().clear();
         transactionListView.setItems(selectedAccountTransactions);
     }
 
-    @FXML
+    /**
+     * Methode um zur Mainview zu wechseln.
+     */
     private void goBack() {
         this.main_application.start(main_application.getPrimaryStage());
     }
 
-    public void setSelectedAccount(String selectedAccount) {
-        this.selectedAccount = selectedAccount;
-    }
-
+    /**
+     * setzt die AccountView bei jedem Aufruf.
+     *
+     * @param main_application setzt das Objekt auf die main_application
+     */
     @FXML
     public void setMainApp(Main_Application main_application) {
         this.main_application = main_application;
@@ -133,6 +129,11 @@ public class AccountViewController implements EventHandler<ActionEvent> {
         transactionListView.setContextMenu(contextMenu);
     }
 
+    /**
+     * Methode die alle Events abfängt und behandelt.
+     *
+     * @param actionEvent trigger event as a Parameter
+     */
     @Override
     public void handle(ActionEvent actionEvent) {
         if (actionEvent.getSource() == menuItemLoeschen) {
@@ -174,8 +175,6 @@ public class AccountViewController implements EventHandler<ActionEvent> {
                 } catch (TransactionAttributeException e) {
                     throw new RuntimeException(e);
                 }
-
-
             }
         } else if (actionEvent.getSource() == sortAsc) {
             handleSortAsc();
@@ -185,16 +184,26 @@ public class AccountViewController implements EventHandler<ActionEvent> {
             handleSortPos();
         } else if (actionEvent.getSource() == sortNeg) {
             handleSortNeg();
+        } else if (actionEvent.getSource() == goBack) {
+            goBack();
         }
     }
 
+    /**
+     * Löscht die ausgewählte Transaktion.
+     *
+     * @throws AccountDoesNotExistException
+     * @throws TransactionDoesNotExistException
+     */
     private void handleDelete() throws AccountDoesNotExistException, TransactionDoesNotExistException {
-        int selectedIndex = transactionListView.getSelectionModel().getSelectedIndex();
         Transaction toDeleteTransaction = transactionListView.getSelectionModel().getSelectedItem();
         transactionListView.getItems().remove(toDeleteTransaction);
         main_application.getBank().removeTransaction(selectedAccount, toDeleteTransaction);
     }
 
+    /**
+     * Erstellt Transaktion
+     */
     public void handleCreation() {
         transactionListView.getItems().clear();
         transactionListView.setItems(FXCollections.observableArrayList
@@ -213,6 +222,11 @@ public class AccountViewController implements EventHandler<ActionEvent> {
         setAccountBalanceLabel(amount);
     }*/
 
+    /**
+     * erstellt Dialog um Payment-Werte zusetzen
+     *
+     * @throws TransactionAttributeException
+     */
     public void createPaymentDialog() throws TransactionAttributeException {
         Dialog<ButtonType> paymentDialog = new Dialog<>();
         paymentDialog.setTitle("Payment durchführen");
@@ -220,37 +234,45 @@ public class AccountViewController implements EventHandler<ActionEvent> {
         paymentDialog.setResizable(true);
         paymentDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         paymentDialog.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
-        Spinner<Integer> amountSpinner = new Spinner<Integer>();
+        Spinner<Integer> amountSpinner = new Spinner<>();
         SpinnerValueFactory<Integer> spinner =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(-3000, 3000, 0);
         spinner.setWrapAround(false);
         amountSpinner.setValueFactory(spinner);
+        //TextField amounttextfield = new TextField();
         TextField descriptiontextfiled = new TextField();
         GridPane gridPane = new GridPane();
         gridPane.add(new Label("Geldmenge:"), 1, 1);
         gridPane.add(amountSpinner, 2, 1);
+        //gridPane.add(amounttextfield, 2, 1);
         gridPane.add(new Label("Beschreibung:"), 1, 2);
         gridPane.add(descriptiontextfiled, 2, 2);
         paymentDialog.getDialogPane().setContent(gridPane);
-        ChangeListener<String> Listener = (((observableValue, s, t1) -> {
-            paymentDialog.getDialogPane().lookupButton(ButtonType.OK).setDisable((
-                    descriptiontextfiled.getText() == null || descriptiontextfiled.getText().trim().isEmpty()));
-        }));
-        amountSpinner.valueProperty().addListener(((observableValue, integer, t1) -> {
-            paymentDialog.getDialogPane().lookupButton(ButtonType.OK).setDisable(amountSpinner.getValue() == 0);
-        }));
+        ChangeListener<String> Listener = (((observableValue, s, t1) ->
+                paymentDialog.getDialogPane().lookupButton(ButtonType.OK).setDisable((
+                        descriptiontextfiled.getText() == null || descriptiontextfiled.getText().trim().isEmpty()))));
+        amountSpinner.valueProperty().addListener(((observableValue, integer, t1) ->
+                paymentDialog.getDialogPane().lookupButton(ButtonType.OK).setDisable(amountSpinner.getValue() == 0)));
+        /*ChangeListener<String> amountListener = (observableValue, s, t1) -> {
+            for (int i = 0; i < amounttextfield.getLength(); i++){
+                int asciivalue = amounttextfield.getText().charAt(i);
+                paymentDialog.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+            }
+        };*/
         descriptiontextfiled.textProperty().addListener(Listener);
+        //amounttextfield.textProperty().addListener(Listener);
         Optional<ButtonType> result = paymentDialog.showAndWait();
-        double amount = amountSpinner.getValue();
+        double amount = Double.parseDouble(String.valueOf(amountSpinner.getValue()));
         String description = descriptiontextfiled.getText();
+        //double amount = Double.parseDouble(amounttextfield.getText());
         String localDate = java.time.LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         if (result.get() == ButtonType.OK) {
             try {
                 main_application.getBank().addTransaction(main_application.derAccount,
                         main_application.initPayment(localDate, amount, description));
                 handleCreation();
-            } catch (TransactionAlreadyExistException | AccountDoesNotExistException |
-                     TransactionAttributeException e) {
+            }
+            catch (TransactionAttributeException | TransactionAlreadyExistException | AccountDoesNotExistException e){
                 throw new RuntimeException(e);
             }
         } else {
@@ -258,6 +280,13 @@ public class AccountViewController implements EventHandler<ActionEvent> {
         }
     }
 
+    /**
+     * erstellt Transfer Dialog um Transfer-Werte zusetzen
+     *
+     * @throws TransactionAlreadyExistException
+     * @throws AccountDoesNotExistException
+     * @throws TransactionAttributeException
+     */
     public void createTransferDialog() throws TransactionAlreadyExistException, AccountDoesNotExistException,
             TransactionAttributeException {
         Dialog<ButtonType> TransferDialog = new Dialog<>();
@@ -280,14 +309,14 @@ public class AccountViewController implements EventHandler<ActionEvent> {
         gridPane.add(new Label("Empfänger:"), 1, 4);
         gridPane.add(recipientTextfield, 2, 4);
         TransferDialog.getDialogPane().setContent(gridPane);
-        ChangeListener<String> Listener = (((observableValue, s, t1) -> {
-            TransferDialog.getDialogPane().lookupButton(ButtonType.OK).setDisable((amountTextfield.getText() == null ||
-                    amountTextfield.getText().trim().isEmpty() || Double.parseDouble(amountTextfield.getText()) < 0 ||
-                    descriptionTextfield.getText() == null ||
-                    descriptionTextfield.getText().trim().isEmpty() || senderTextfield.getText() == null ||
-                    senderTextfield.getText().trim().isEmpty() || recipientTextfield.getText() == null ||
-                    recipientTextfield.getText().trim().isEmpty()));
-        }));
+        ChangeListener<String> Listener = (((observableValue, s, t1) ->
+                TransferDialog.getDialogPane().lookupButton(ButtonType.OK).
+                        setDisable((amountTextfield.getText() == null ||
+                                amountTextfield.getText().trim().isEmpty() || Double.parseDouble(amountTextfield.getText()) < 0 ||
+                                descriptionTextfield.getText() == null ||
+                                descriptionTextfield.getText().trim().isEmpty() || senderTextfield.getText() == null ||
+                                senderTextfield.getText().trim().isEmpty() || recipientTextfield.getText() == null ||
+                                recipientTextfield.getText().trim().isEmpty()))));
         amountTextfield.textProperty().addListener((observableValue, s, t1) -> {
             if (!t1.matches("\\d*")) {
                 amountTextfield.setText(t1.replaceAll("\\D", ""));
@@ -322,6 +351,9 @@ public class AccountViewController implements EventHandler<ActionEvent> {
         }
     }
 
+    /**
+     * Fehlermeldung Dialog, wenn account nicht existiert.
+     */
     public void alertAccountdoesnotexist() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Fehler");
@@ -330,11 +362,22 @@ public class AccountViewController implements EventHandler<ActionEvent> {
         alert.showAndWait();
     }
 
+    /**
+     * Fehlermeldung Dialog, wenn Transaktion existiert.
+     */
     public void alertTransactionExistAlready() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Fehler");
         alert.setHeaderText("Es ist ein Fehler aufgetreten");
         alert.setContentText("Transaktion existiert schon");
+        alert.showAndWait();
+    }
+
+    public void alertTransactionAttribute(){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Fehler");
+        alert.setHeaderText("Es ist ein Fehler aufgetreten");
+        alert.setContentText("Bitte eine Zahl eingeben");
         alert.showAndWait();
     }
 }
